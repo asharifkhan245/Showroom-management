@@ -1,0 +1,85 @@
+
+
+1. **Main Admins Table**:
+   - `id` (Primary Key)
+   - `name`
+   - `email`
+   - `password`
+   - `created_at`
+   - `updated_at`
+
+2. **Sub Admins Table**:
+   - `id` (Primary Key)
+   - `main_admin_id` (Foreign Key to Main Admins Table)
+   - `name`
+   - `email`
+   - `password`
+   - `created_at`
+   - `updated_at`
+   - `permissions` 
+
+3. **Employees Table**:
+   - `id` (Primary Key)
+   - `name`
+   - `hourly_rate`
+   - `created_at`
+   - `updated_at`
+
+4. **Cars Table**:
+   - `id` (Primary Key)
+   - `brand`
+   - `model`
+   - `year`
+   - `horse_power`
+   - `title`
+   - `images` (Consider storing image URLs or references)
+   - `assigned_number_plate`
+   - `chassis_number`
+   - `engine_number`
+   - `cost`
+   - `price`
+   - `car_report_doc` (Consider storing document references)
+   - `condition_description`
+   - `features` (Store features in a separate table if they can vary)
+
+5. **Customers Table**:
+   - `id` (Primary Key)
+   - `name`
+   - `id_card_number`
+   - `billing_address`
+   - `email`
+   - `phone`
+
+6. **Invoices Table**:
+   - `id` (Primary Key)
+   - `car_id` (Foreign Key to Cars Table)
+   - `customer_id` (Foreign Key to Customers Table)
+   - `selling_price`
+   - `date_handed_over`
+
+7. **Expenses Table**:
+   - `id` (Primary Key)
+   - `date`
+   - `reason`
+   - `amount`
+   - `attachment` (Consider storing attachment references)
+
+8. **Appointments Table**:
+   - `id` (Primary Key)
+   - `customer_id` (Foreign Key to Customers Table)
+   - `appointment_time`
+   - `status` (e.g., Pending, Confirmed)
+
+9. **Attendance Table**:
+   - `id` (Primary Key)
+   - `employee_id` (Foreign Key to Employees Table)
+   - `clock_in_time`
+   - `clock_out_time`
+   - `break_in_time`
+   - `break_out_time`
+
+10. **Features Table**:
+    - `id` (Primary Key)
+    - `name`
+    - `icon_image` (Store image references)
+    - `status` (Active/Inactive)
