@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminController;
 use App\Models\Admin;
+use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -23,10 +24,19 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 
 /** Admin routes **/
+
+
 Route::post('/login', [AdminController::class, 'login']);
 Route::post('/forgot-password', [AdminController::class, 'forget_password'])->middleware('auth:api');
 Route::post('/reset-password/{id}', [AdminController::class, 'reset_password'])->middleware('auth:api');
 Route::post('/edit-admin/{id}', [AdminController::class, 'edit_admin'])->middleware('auth:api');
+
+
+/** Role privileges routes **/
+Route::post('/create-role', [AdminController::class, 'create_role'])->middleware('auth:api');
+Route::post('/edit-role/{id}', [AdminController::class, 'edit_role'])->middleware('auth:api');
+Route::get('/get-roles', [AdminController::class, 'get_roles'])->middleware('auth:api');
+Route::post('/delete-role/{id}', [AdminController::class,'delete_role'])->middleware('auth:api');
 
 /** Sub admin routes **/
 Route::post('/create-sub-admin', [AdminController::class, 'create_sub_admin'])->middleware('auth:api');

@@ -5,17 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Sub_Admin extends Model
+class Role extends Model
 {
 
-    protected $table = 'sub_admins';
+    protected $table = 'role_privilages';
 
     protected $fillable = [
         'name',
-        'email',
-        'password',
-        'role',
+        'privilages'
     ];
-    
+
     use HasFactory;
 }

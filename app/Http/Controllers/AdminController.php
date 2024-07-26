@@ -15,6 +15,7 @@ use App\Models\Sub_Admin;
 use App\Models\Appointment;
 use App\Models\Attendance;
 use App\Models\Token;
+use App\Models\Role;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -266,6 +267,93 @@ class AdminController extends Controller
         }
     }
 
+    /* Roles and permissions management */
+    public function create_role(Request $request)
+    {
+
+        $request->validate([
+            'name' => 'required',
+            'privileges' => 'required'
+        ]);
+
+
+        $input = $request->all();
+
+        $role = Role::create($input);
+
+        $success['status'] = 200;
+        $success['message'] = 'Role created successfully';
+        $success['data'] = $role;
+
+        return response()->json(['success' => $success]);
+    }
+
+
+
+    public function edit_role(Request $request, $id)
+    {
+
+        $role = Role::find($id);
+
+        if ($role) {
+
+
+            if ($request->name) {
+                $role->name = $request->name;
+            }
+
+            if ($request->privilages) {
+                $role->privilages = $request->privilages;
+            }
+
+            $role->save();
+
+            $success['status'] = 200;
+            $success['message'] = 'Role updated successfully';
+            $success['data'] = $role;
+
+            return response()->json(['success' => $success]);
+        } else {
+
+            $error['status'] = 400;
+            $error['message'] = 'role not found';
+
+            return response()->json(['error' => $error]);
+        }
+    }
+
+
+
+    public function delete_role($id)
+    {
+        $role =  Role::find($id);
+        $role->delete();
+
+        $success['status'] = 200;
+        $success['message'] = 'role deleted successfully';
+        $success['data'] =  $role;
+
+        return response()->json(['success' => $success]);
+    }
+
+
+    public function get_roles()
+    {
+
+        $roles = Role::all();
+        foreach ($roles as $role) {
+            $role->privilages = json_decode($role->privilages);
+        }
+
+        $success['status'] = 200;
+        $success['message'] = 'Roles fetched successfully';
+        $success['data'] = $roles;
+
+        return response()->json(['success' => $success]);
+    }
+
+
+
     /* sub admin management */
 
     public function create_sub_admin(Request $request)
@@ -275,7 +363,7 @@ class AdminController extends Controller
             'name' => 'required',
             'email' => 'required|email',
             'password' => 'required',
-            'permissions' => 'nullable',
+            'role' => 'required'
         ]);
 
         $input  = $request->all();
@@ -306,9 +394,9 @@ class AdminController extends Controller
             if ($request->password) {
                 $sub_admin->password = $request->password;
             }
-            if ($request->permissions) {
+            if ($request->role) {
 
-                $sub_admin->permissions = $request->permissions;
+                $sub_admin->role = $request->role;
             }
 
             $sub_admin->save();
