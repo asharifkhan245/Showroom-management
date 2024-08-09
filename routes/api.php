@@ -24,13 +24,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 
 /** Admin routes **/
-
-
 Route::post('/login', [AdminController::class, 'login']);
 Route::post('/forgot-password', [AdminController::class, 'forget_password'])->middleware('auth:api');
 Route::post('/reset-password/{id}', [AdminController::class, 'reset_password'])->middleware('auth:api');
 Route::post('/edit-admin/{id}', [AdminController::class, 'edit_admin'])->middleware('auth:api');
-
 
 /** Role privileges routes **/
 Route::post('/create-role', [AdminController::class, 'create_role'])->middleware('auth:api');
@@ -60,12 +57,13 @@ Route::get('/get-single-car/{id}', [AdminController::class, 'get_single_car']);
 /** Car management routes **/
 Route::get('/show-car-code/{id}', [AdminController::class, 'show_car_code']);
 Route::post('/mark-car/{id}', [AdminController::class, 'mark_car'])->middleware('auth:api');
+Route::get('/get-invoices', [AdminController::class,'get_invoices']);
 Route::post('/delete-feature/{car_id}/{id}', [AdminController::class, 'delete_feature'])->middleware('auth:api');
 Route::post('/edit-feature/{car_id}/{id}', [AdminController::class, 'edit_feature'])->middleware('auth:api');
 
 /** Expenses routes **/
 Route::post('/create-expense', [AdminController::class, 'create_expense'])->middleware('auth:api');
-Route::post('/edit-expense/{id}', [AdminController::class, 'edit_expense'])->middleware('auth:api');
+Route::post('/edit-expense/{id}', [AdminController::class, 'edit_expe nse'])->middleware('auth:api');
 Route::post('/delete-expense/{id}', [AdminController::class, 'delete_expense'])->middleware('auth:api');
 Route::get('/get-expenses', [AdminController::class, 'get_expenses']);
 
@@ -84,3 +82,5 @@ Route::get('/show-attendance-qrcode', [AdminController::class, 'generateQrCode']
 Route::post('/mark-attendance', [AdminController::class, 'markAttendance']);
 Route::post('/get-attendances', [AdminController::class, 'getAttendances']);
 Route::post('/edit-attendances/{id}', [AdminController::class, 'editAttendances'])->middleware('auth:api');
+
+Route::get('/generate-pdf', [AdminController::class, 'generatePdf']);

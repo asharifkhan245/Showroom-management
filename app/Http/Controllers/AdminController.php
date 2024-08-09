@@ -16,6 +16,8 @@ use App\Models\Appointment;
 use App\Models\Attendance;
 use App\Models\Token;
 use App\Models\Role;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Barryvdh\DomPDF\PDF as DomPDFPDF;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -61,13 +63,17 @@ class AdminController extends Controller
 
             $subadmin = Sub_Admin::where('email', $request->email)->where('password', $request->password)->first();
 
-            if ($subadmin) {
+                $role  = Role::where('name', $subadmin->role)->first();
+                $role->privilages =  json_decode($role->privilages);
 
+
+            if ($subadmin) {
                 $success['status'] = 200;
                 $success['message'] = 'Login successfully';
-                $success['data'] =  $subadmin;
+                $success['data'] =  $subadmin;          
 
                 return response()->json(['success' => $success]);
+
             } else {
 
                 $error['status'] = 401;
@@ -75,6 +81,7 @@ class AdminController extends Controller
 
                 return response()->json(['error' => $error]);
             }
+
         } else if ($request->role_id == 3) {
 
             $employee = Employees::where('email', $request->email)->where('password', $request->password)->first();
@@ -908,6 +915,7 @@ class AdminController extends Controller
                 ]);
 
                 if ($customer) {
+                    
                     $invoice  = Invoice::create([
                         'car_id' => $car->id,
                         'customer_id' => $customer->id,
@@ -929,6 +937,34 @@ class AdminController extends Controller
 
             return response()->json(['error' => $error]);
         }
+    }
+
+    public function get_invoices(){
+
+       $all_invoices = Invoice::all();
+
+       if($all_invoices->count() > 0){
+
+            foreach($all_invoices as $i){
+
+                $i->car = Car::find($i->car_id);
+                $i->car->images = json_decode($i->car->images);
+                $i->car->features = json_decode($i->car->features);
+                $i->customer = Customer::find($i->customer_id);
+            }
+
+            $success['status'] = 200;
+            $success['message'] = 'Invoices fetched successfully';
+            $success['data'] = $all_invoices;
+
+            return response()->json(['success' => $success]);
+
+       }else{
+
+        $error['status'] = 400;
+        $error['message'] = 'No invoices found';
+        return response()->json(['error' => $error]);
+       }
     }
 
     /* Expense management */
@@ -1425,4 +1461,27 @@ class AdminController extends Controller
             return response()->json(['error' => $error]);
         }
     }
+   
+    public function generatePdf()
+    {        
+        $qrCodes = []; 
+        for ($i = 1; $i <= 99; $i++) {
+            $qrCodeData = "QR Code $i";
+            $svg = QrCode::size(100)->format('svg')->generate($qrCodeData);
+                     
+            $base64Svg = base64_encode($svg);
+            $dataUri = 'data:image/svg+xml;base64,' . $base64Svg;
+            $qrCodes[] = $dataUri;
+        }
+
+        $html = view('qrcodes', compact('qrCodes'))->render();
+
+        $pdf = PDF::loadHTML($html);
+
+        return $pdf->download('qrcodes.pdf');
+    }
+
+
+
+    
 }

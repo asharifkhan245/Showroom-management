@@ -7,12 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class Role extends Model
 {
-
+    
     protected $table = 'role_privilages';
 
     protected $fillable = [
         'name',
-        'privilages'
+        'privilages',
     ];
 
     use HasFactory;
